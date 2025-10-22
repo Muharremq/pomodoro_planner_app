@@ -31,21 +31,39 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.8
-  provider: ^6.1.5+1
+  # State Management (Durum Yönetimi)
+  flutter_riverpod: ^2.5.1  # Modern, esnek ve güçlü bir state management çözümü
+
+  # Local Database (Yerel Veritabanı)
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0     # Görevleri, ayarları ve istatistikleri saklamak için hızlı bir NoSQL veritabanı
+  path_provider: ^2.1.3    # Veritabanı dosyasını saklayacak yolu bulmak için
+
+  # Routing (Sayfa Yönlendirme)
+  go_router: ^14.0.2       # Modern ve güçlü bir sayfa yönlendirme kütüphanesi
+
+  # Notifications (Bildirimler)
+  flutter_local_notifications: ^17.1.0 # Arka planda bildirim göndermek için
+
+  # Charts (Grafikler)
+  fl_chart: ^0.68.0        # İstatistikler sayfasındaki grafikler için
+
+  # Utilities (Yardımcı Paketler)
+  intl: ^0.19.0            # Tarih ve saat formatlama için
+  google_fonts: ^6.2.1     # Güzel fontlar kullanmak için
+  flutter_svg: ^2.0.10+1   # Gezegen gibi vektörel tasarımları kullanmak için (isteğe bağlı)
+
+  cupertino_icons: ^1.0.6
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
-  flutter_lints: ^5.0.0
+  # Kod üretimi için gerekli
+  build_runner: ^2.4.9
+  hive_generator: ^2.0.1   # Hive modelleri için otomatik kod üretecek
+
+  flutter_lints: ^3.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
