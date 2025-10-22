@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'features/pomodoro/presentation/screens/timer_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart'; 
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,7 +17,7 @@ void main() {
     ),
   );
   
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {

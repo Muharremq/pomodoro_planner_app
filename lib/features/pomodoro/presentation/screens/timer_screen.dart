@@ -2,12 +2,53 @@
 
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/timer_provider.dart';
 
-class TimerScreen extends StatelessWidget {
+class TimerScreen extends ConsumerWidget {
   const TimerScreen({super.key});
 
+  // Süreyi "dakika:saniye" formatına çeviren yardımcı fonksiyon
+  String _formatTime(int seconds) {
+    final minutes = (seconds / 60).floor().toString().padLeft(2, '0');
+    final remainingSeconds = (seconds % 60).toString().padLeft(2, '0');
+    return '$minutes:$remainingSeconds';
+  }
+
+  // Seans türüne göre metin döndüren yardımcı fonksiyon
+  String _getSessionTitle(PomodoroSession session) {
+    switch (session) {
+      case PomodoroSession.focus:
+        return 'Odaklanma Zamanı';
+      case PomodoroSession.shortBreak:
+        return 'Kısa Mola';
+      case PomodoroSession.longBreak:
+        return 'Uzun Mola';
+    }
+  }
+
+  // Seans türüne göre ikon döndüren yardımcı fonksiyon
+  IconData _getSessionIcon(PomodoroSession session) {
+    switch (session) {
+      case PomodoroSession.focus:
+        return Icons.psychology_outlined;
+      case PomodoroSession.shortBreak:
+        return Icons.coffee_outlined;
+      case PomodoroSession.longBreak:
+        return Icons.self_improvement_outlined;
+    }
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // timerProvider'ı izle ve state'i al
+    final timerState = ref.watch(timerProvider);
+    // timerProvider'ın notifier'ını (fonksiyonları) al
+    final timerNotifier = ref.read(timerProvider.notifier);
+
+    // Toplam süreyi hesapla (ilerleme çubuğu için)
+    final totalDuration = timerNotifier.getDurationForSession(timerState.session);
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -48,7 +89,7 @@ class TimerScreen extends StatelessWidget {
                 ),
               );
             }),
-            
+
             SafeArea(
               child: Column(
                 children: [
@@ -114,7 +155,7 @@ class TimerScreen extends StatelessWidget {
 
                   const Spacer(),
 
-                  // Seans Türü
+                  // Seans Türü - DİNAMİK
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     decoration: BoxDecoration(
@@ -136,14 +177,14 @@ class TimerScreen extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          Icons.spa_outlined,
+                          _getSessionIcon(timerState.session),
                           color: Colors.lightBlueAccent.shade200,
                           size: 20,
                         ),
                         const SizedBox(width: 8),
-                        const Text(
-                          'Odaklanma Zamanı',
-                          style: TextStyle(
+                        Text(
+                          _getSessionTitle(timerState.session),
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
@@ -156,7 +197,7 @@ class TimerScreen extends StatelessWidget {
 
                   const SizedBox(height: 50),
 
-                  // Gezegen Timer
+                  // Gezegen Timer - DİNAMİK
                   Stack(
                     alignment: Alignment.center,
                     children: [
@@ -175,7 +216,7 @@ class TimerScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      
+
                       // Ana gezegen çemberi
                       Container(
                         width: 260,
@@ -207,9 +248,11 @@ class TimerScreen extends StatelessWidget {
                         child: Stack(
                           fit: StackFit.expand,
                           children: [
-                            // Progress indicator
+                            // Progress indicator - DİNAMİK
                             CircularProgressIndicator(
-                              value: 1,
+                              value: totalDuration > 0
+                                  ? timerState.remainingTime / totalDuration
+                                  : 1.0,
                               strokeWidth: 8,
                               backgroundColor: Colors.white.withOpacity(0.1),
                               valueColor: AlwaysStoppedAnimation<Color>(
@@ -217,14 +260,14 @@ class TimerScreen extends StatelessWidget {
                               ),
                               strokeCap: StrokeCap.round,
                             ),
-                            
-                            // Timer metni
+
+                            // Timer metni - DİNAMİK
                             Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    '25:00',
+                                    _formatTime(timerState.remainingTime),
                                     style: TextStyle(
                                       fontSize: 68,
                                       fontWeight: FontWeight.bold,
@@ -258,7 +301,7 @@ class TimerScreen extends StatelessWidget {
 
                   const SizedBox(height: 60),
 
-                  // Kontrol Butonları
+                  // Kontrol Butonları - DİNAMİK
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -275,7 +318,7 @@ class TimerScreen extends StatelessWidget {
                           ],
                         ),
                         child: IconButton(
-                          onPressed: () {},
+                          onPressed: () => timerNotifier.skipSession(),
                           icon: Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
@@ -294,10 +337,10 @@ class TimerScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      
+
                       const SizedBox(width: 40),
-                      
-                      // Play/Pause Butonu
+
+                      // Play/Pause Butonu - DİNAMİK
                       Container(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
@@ -318,23 +361,31 @@ class TimerScreen extends StatelessWidget {
                           ],
                         ),
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            if (timerState.status == TimerStatus.running) {
+                              timerNotifier.pauseTimer();
+                            } else {
+                              timerNotifier.startTimer();
+                            }
+                          },
                           style: ElevatedButton.styleFrom(
                             shape: const CircleBorder(),
                             padding: const EdgeInsets.all(28),
                             backgroundColor: Colors.transparent,
                             shadowColor: Colors.transparent,
                           ),
-                          child: const Icon(
-                            Icons.play_arrow_rounded,
+                          child: Icon(
+                            timerState.status == TimerStatus.running
+                                ? Icons.pause_rounded
+                                : Icons.play_arrow_rounded,
                             size: 48,
                             color: Colors.white,
                           ),
                         ),
                       ),
-                      
+
                       const SizedBox(width: 40),
-                      
+
                       // Reset Butonu
                       Container(
                         decoration: BoxDecoration(
@@ -348,7 +399,7 @@ class TimerScreen extends StatelessWidget {
                           ],
                         ),
                         child: IconButton(
-                          onPressed: () {},
+                          onPressed: () => timerNotifier.resetTimer(),
                           icon: Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
@@ -372,7 +423,7 @@ class TimerScreen extends StatelessWidget {
 
                   const SizedBox(height: 40),
 
-                  // Pomodoro Sayacı
+                  // Pomodoro Sayacı - DİNAMİK
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                     decoration: BoxDecoration(
@@ -392,7 +443,7 @@ class TimerScreen extends StatelessWidget {
                             child: Icon(
                               Icons.circle,
                               size: 12,
-                              color: index < 0
+                              color: index < timerState.completedPomodoros % 4
                                   ? Colors.lightBlueAccent.shade200
                                   : Colors.white.withOpacity(0.3),
                             ),
@@ -400,7 +451,7 @@ class TimerScreen extends StatelessWidget {
                         }),
                         const SizedBox(width: 12),
                         Text(
-                          '0/4',
+                          '${timerState.completedPomodoros % 4}/4',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
