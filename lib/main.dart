@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pomodoro_planner_app/features/task/presentation/screens/tasks_screen.dart';
 import 'features/pomodoro/presentation/screens/timer_screen.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; 
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Sistem UI'ını özelleştir (opsiyonel)
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -16,7 +16,7 @@ void main() {
       systemNavigationBarIconBrightness: Brightness.light,
     ),
   );
-  
+
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -28,11 +28,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Planet Study Planner',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.blue,
-      ),
-      home: TimerScreen(),
+      theme: ThemeData(brightness: Brightness.dark, primarySwatch: Colors.blue),
+      home: TasksScreen(),
     );
   }
 }

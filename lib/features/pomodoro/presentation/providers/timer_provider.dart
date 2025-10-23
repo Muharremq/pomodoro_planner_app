@@ -40,6 +40,7 @@ class TimerNotifier extends Notifier<TimerState> {
   final int _shortBreakDuration = 5 * 60;
   final int _longBreakDuration = 15 * 60;
 
+  @override
   TimerState build() {
     return TimerState(
       remainingTime: _focusDuration,
@@ -84,7 +85,7 @@ class TimerNotifier extends Notifier<TimerState> {
   void _sessionCompleted({bool skipped = false}) {
     _timer?.cancel();
     int currentCompleted = state.completedPomodoros;
-    if (state.session == PomodoroSession.focus && skipped!) {
+    if (state.session == PomodoroSession.focus && skipped) {
       currentCompleted++;
     }
     PomodoroSession nextSession;
@@ -120,4 +121,7 @@ class TimerNotifier extends Notifier<TimerState> {
     }
   }
 }
-final timerProvider = NotifierProvider<TimerNotifier, TimerState>(TimerNotifier.new);
+
+final timerProvider = NotifierProvider<TimerNotifier, TimerState>(
+  TimerNotifier.new,
+);
