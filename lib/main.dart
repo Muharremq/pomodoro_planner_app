@@ -1,13 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pomodoro_planner_app/features/pomodoro/data/pomodoro_history_model.dart';
+import 'package:pomodoro_planner_app/features/task/data/task_model.dart';
 import 'package:pomodoro_planner_app/features/task/presentation/screens/tasks_screen.dart';
 import 'features/pomodoro/presentation/screens/timer_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:pomodoro_planner_app/features/pomodoro/data/pomodoro_history_model.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Sistem UI'ını özelleştir (opsiyonel)
+  await Hive.initFlutter();
+
+  // Adapter'ları kaydet
+  Hive.registerAdapter(TaskAdapter());
+  Hive.registerAdapter(PomodoroHistoryAdapter());
+
+  // Box'ları aç - İSİMLERE DİKKAT!
+  await Hive.openBox<Task>('tasksBox');
+  await Hive.openBox<PomodoroHistory>(
+    'pomodoro_history',
+  ); // 'pomodoroHistoryBox' değil!
+
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -29,7 +44,7 @@ class MyApp extends StatelessWidget {
       title: 'Planet Study Planner',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(brightness: Brightness.dark, primarySwatch: Colors.blue),
-      home: TasksScreen(),
+      home: const TasksScreen(),
     );
   }
 }
