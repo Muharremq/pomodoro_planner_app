@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pomodoro_planner_app/features/task/data/task_model.dart';
-import 'package:pomodoro_planner_app/features/task/presentation/providers/task_provider.dart';
-import 'package:pomodoro_planner_app/features/task/presentation/widgets/add_edit_task_dialog.dart';
+import 'package:pomodoro_planner_app/features/tasks/data/task_model.dart';
+import 'package:pomodoro_planner_app/features/tasks/presentation/providers/task_provider.dart';
+import 'package:pomodoro_planner_app/features/tasks/presentation/widgets/add_edit_task_dialog.dart';
 
 class TaskCard extends ConsumerWidget {
   final Task task;

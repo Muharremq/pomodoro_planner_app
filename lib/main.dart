@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pomodoro_planner_app/features/navigation/presentation/screens/main_screen.dart';
 import 'package:pomodoro_planner_app/features/pomodoro/data/pomodoro_history_model.dart';
-import 'package:pomodoro_planner_app/features/task/data/task_model.dart';
-import 'package:pomodoro_planner_app/features/task/presentation/screens/tasks_screen.dart';
+import 'package:pomodoro_planner_app/features/tasks/data/task_model.dart';
+import 'package:pomodoro_planner_app/features/tasks/presentation/screens/tasks_screen.dart';
 import 'features/pomodoro/presentation/screens/timer_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
       title: 'Planet Study Planner',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(brightness: Brightness.dark, primarySwatch: Colors.blue),
-      home: const TasksScreen(),
+      home: const MainScreen(),
     );
   }
 }

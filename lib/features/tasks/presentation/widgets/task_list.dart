@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pomodoro_planner_app/features/task/data/task_model.dart';
-import 'package:pomodoro_planner_app/features/task/presentation/widgets/task_card.dart';
+import 'package:pomodoro_planner_app/features/tasks/data/task_model.dart';
+import 'package:pomodoro_planner_app/features/tasks/presentation/widgets/task_card.dart';
 
 class TaskList extends StatelessWidget {
   final List<Task> task;
