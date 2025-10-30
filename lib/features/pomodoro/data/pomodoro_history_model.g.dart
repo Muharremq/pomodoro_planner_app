@@ -21,13 +21,17 @@ class PomodoroHistoryAdapter extends TypeAdapter<PomodoroHistory> {
       completedAt: fields[1] as DateTime,
       duration: fields[2] as int,
       taskId: fields[3] as String?,
+      sessionType: fields[4] != null
+          ? PomodoroSession.values[fields[4] as int]
+          : null,
+      wasInterrupted: fields[5] as bool? ?? false,
     );
   }
 
   @override
   void write(BinaryWriter writer, PomodoroHistory obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -35,7 +39,11 @@ class PomodoroHistoryAdapter extends TypeAdapter<PomodoroHistory> {
       ..writeByte(2)
       ..write(obj.duration)
       ..writeByte(3)
-      ..write(obj.taskId);
+      ..write(obj.taskId)
+      ..writeByte(4)
+      ..write(obj.sessionTypeIndex)
+      ..writeByte(5)
+      ..write(obj.wasInterrupted);
   }
 
   @override

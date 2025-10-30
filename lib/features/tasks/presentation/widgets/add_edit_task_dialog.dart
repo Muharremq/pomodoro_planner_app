@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pomodoro_planner_app/features/tasks/data/task_model.dart';
 import 'package:pomodoro_planner_app/features/tasks/presentation/providers/task_provider.dart';
@@ -98,9 +97,7 @@ void showAddEditTaskDialog(BuildContext context, {Task? taskToEdit}) {
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            taskToEdit == null
-                                ? 'Yeni Görev Ekle'
-                                : 'Görevi Düzenle',
+                            taskToEdit == null ? 'Add New Task' : 'Edit Task',
                             style: const TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
@@ -143,7 +140,7 @@ void showAddEditTaskDialog(BuildContext context, {Task? taskToEdit}) {
                           children: [
                             // Görev Adı Label
                             Text(
-                              'Görev Adı',
+                              'Task Name',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -171,7 +168,7 @@ void showAddEditTaskDialog(BuildContext context, {Task? taskToEdit}) {
                                   letterSpacing: 0.3,
                                 ),
                                 decoration: InputDecoration(
-                                  hintText: 'Görev başlığını girin...',
+                                  hintText: 'Enter the task title...',
                                   hintStyle: TextStyle(
                                     color: Colors.white.withOpacity(0.4),
                                     letterSpacing: 0.3,
@@ -189,7 +186,7 @@ void showAddEditTaskDialog(BuildContext context, {Task? taskToEdit}) {
 
                             // Not Label
                             Text(
-                              'Not (İsteğe Bağlı)',
+                              'Note (Optional)',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -218,7 +215,7 @@ void showAddEditTaskDialog(BuildContext context, {Task? taskToEdit}) {
                                   letterSpacing: 0.3,
                                 ),
                                 decoration: InputDecoration(
-                                  hintText: 'Görev detaylarını ekleyin...',
+                                  hintText: 'Add task details...',
                                   hintStyle: TextStyle(
                                     color: Colors.white.withOpacity(0.4),
                                     letterSpacing: 0.3,
@@ -239,7 +236,7 @@ void showAddEditTaskDialog(BuildContext context, {Task? taskToEdit}) {
                               child: Column(
                                 children: [
                                   Text(
-                                    'Tahmini Pomodoro Sayısı',
+                                    'Estimated Number of Pomodoros',
                                     style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
@@ -289,8 +286,9 @@ void showAddEditTaskDialog(BuildContext context, {Task? taskToEdit}) {
                                             color: Colors.white,
                                             onPressed: () {
                                               setState(() {
-                                                if (pomodoroCount > 1)
+                                                if (pomodoroCount > 1) {
                                                   pomodoroCount--;
+                                                }
                                               });
                                             },
                                           ),
@@ -428,7 +426,7 @@ void showAddEditTaskDialog(BuildContext context, {Task? taskToEdit}) {
                                         ),
                                       ),
                                       child: Text(
-                                        'İptal',
+                                        'Cancel',
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w600,
@@ -499,7 +497,7 @@ void showAddEditTaskDialog(BuildContext context, {Task? taskToEdit}) {
                                         ),
                                       ),
                                       child: const Text(
-                                        'Kaydet',
+                                        'Save',
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,

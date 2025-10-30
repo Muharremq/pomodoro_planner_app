@@ -18,11 +18,11 @@ class TimerScreen extends ConsumerWidget {
   String _getSessionTitle(PomodoroSession session) {
     switch (session) {
       case PomodoroSession.focus:
-        return 'Odaklanma Zamanı';
+        return 'Time to Focus';
       case PomodoroSession.shortBreak:
-        return 'Kısa Mola';
+        return 'Short Break';
       case PomodoroSession.longBreak:
-        return 'Uzun Mola';
+        return 'Long Break';
     }
   }
 
@@ -166,10 +166,11 @@ class TimerScreen extends ConsumerWidget {
               const SizedBox(width: 20),
               ElevatedButton(
                 onPressed: () {
-                  if (timerState.status == TimerStatus.running)
+                  if (timerState.status == TimerStatus.running) {
                     timerNotifier.pauseTimer();
-                  else
+                  } else {
                     timerNotifier.startTimer();
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   shape: const CircleBorder(),

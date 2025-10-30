@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import '../../data/pomodoro_history_model.dart';
 
 enum TimerStatus { initial, running, paused }
 
@@ -11,12 +12,14 @@ class TimerState {
   final TimerStatus status;
   final PomodoroSession session;
   final int completedPomodoros;
+  final String? currentTaskId; // Hangi görev için çalışıldığını takip et
 
   const TimerState({
     required this.remainingTime,
     required this.status,
     required this.session,
     required this.completedPomodoros,
+    this.currentTaskId,
   });
 
   TimerState copyWith({
@@ -24,12 +27,14 @@ class TimerState {
     TimerStatus? status,
     PomodoroSession? session,
     int? completedPomodoros,
+    String? currentTaskId,
   }) {
     return TimerState(
       remainingTime: remainingTime ?? this.remainingTime,
       status: status ?? this.status,
       session: session ?? this.session,
       completedPomodoros: completedPomodoros ?? this.completedPomodoros,
+      currentTaskId: currentTaskId ?? this.currentTaskId,
     );
   }
 }
@@ -40,14 +45,25 @@ class TimerNotifier extends Notifier<TimerState> {
   final int _shortBreakDuration = 5 * 60;
   final int _longBreakDuration = 15 * 60;
 
+  // Hive box'ı tanımla
+  late Box<PomodoroHistory> _historyBox;
+
   @override
   TimerState build() {
+    // Box'ı al
+    _historyBox = Hive.box<PomodoroHistory>('pomodoro_history');
+
     return TimerState(
       remainingTime: _focusDuration,
       status: TimerStatus.initial,
       session: PomodoroSession.focus,
       completedPomodoros: 0,
     );
+  }
+
+  // Görev seçme metodu
+  void setCurrentTask(String? taskId) {
+    state = state.copyWith(currentTaskId: taskId);
   }
 
   void startTimer() {
@@ -84,10 +100,17 @@ class TimerNotifier extends Notifier<TimerState> {
 
   void _sessionCompleted({bool skipped = false}) {
     _timer?.cancel();
+
+    // Eğer focus seansı başarıyla tamamlandıysa kaydet
+    if (state.session == PomodoroSession.focus && !skipped) {
+      _savePomodoroHistory(wasInterrupted: false);
+    }
+
     int currentCompleted = state.completedPomodoros;
-    if (state.session == PomodoroSession.focus && skipped) {
+    if (state.session == PomodoroSession.focus && !skipped) {
       currentCompleted++;
     }
+
     PomodoroSession nextSession;
     if (currentCompleted > 0 && currentCompleted % 4 == 0) {
       nextSession = PomodoroSession.longBreak;
@@ -105,9 +128,38 @@ class TimerNotifier extends Notifier<TimerState> {
           ? currentCompleted
           : state.completedPomodoros,
     );
+  }
 
-    // TODO: Otomatik başlatma ayarı açıksa startTimer() çağrılacak
-    // TODO: Bildirim ve ses çalma işlemleri burada yapılacak
+  // Pomodoro geçmişini kaydetme
+  void _savePomodoroHistory({required bool wasInterrupted}) {
+    final newHistory = PomodoroHistory(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      completedAt: DateTime.now(),
+      duration: _focusDuration ~/ 60, // Dakika cinsinden
+      taskId: state.currentTaskId,
+      sessionType: state.session,
+      wasInterrupted: wasInterrupted,
+    );
+
+    _historyBox.put(newHistory.id, newHistory);
+
+    // Eğer görev varsa, task provider'a bildir
+    if (state.currentTaskId != null) {
+      // TasksNotifier'ın logCompletedPomodoro metodunu çağır
+      // Bu, ref.read(tasksProvider.notifier) ile yapılabilir
+      // Ancak burada ref'e erişimimiz yok, bu yüzden alternatif yol:
+      // TasksNotifier'da direkt Hive'a erişim zaten var
+    }
+  }
+
+  // Zamanlayıcıyı iptal etme (kullanıcı durdurunca)
+  void interruptTimer() {
+    if (state.status == TimerStatus.running &&
+        state.session == PomodoroSession.focus) {
+      // Yarım kalan pomodoro'yu kaydet
+      _savePomodoroHistory(wasInterrupted: true);
+    }
+    resetTimer();
   }
 
   int getDurationForSession(PomodoroSession session) {

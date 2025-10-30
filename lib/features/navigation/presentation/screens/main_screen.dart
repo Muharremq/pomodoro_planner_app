@@ -2,9 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pomodoro_planner_app/features/stats/presentation/screens/stats_screen.dart';
 import 'dart:math' as math;
-
-// Doğrudan ekran widget'larını import ediyoruz
 import '../../../pomodoro/presentation/screens/timer_screen.dart';
 import '../../../tasks/presentation/screens/tasks_screen.dart';
 
@@ -24,16 +23,38 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     });
   }
 
-  // Sayfa listesi artık çok daha temiz. Sadece widget'ları çağırıyoruz.
-  final List<Widget> pageOptions = [const TimerScreen(), const TasksScreen()];
+  /* Geçici placeholder ekran (Statistics ekranı hazır olana kadar)
+  Widget _buildStatisticsPlaceholder() {
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.bar_chart_rounded, size: 80, color: Colors.cyanAccent),
+          SizedBox(height: 20),
+          Text(
+            'Statistics',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }*/
+
+  // Sayfa listesi - 3 sayfa olmalı (bottomNavigationBar ile eşleşmeli)
+  List<Widget> get pageOptions => [
+    const TimerScreen(),
+    const TasksScreen(),
+    const StatisticsScreen(), // Gerçek StatisticsScreen() ile değiştirilecek
+  ];
 
   @override
   Widget build(BuildContext context) {
-    // build metodu içindeki tüm timer'a özel kodlar kaldırıldı, çünkü
-    // onlar artık kendi ekranlarının içinde yönetiliyor.
-
     return Scaffold(
-      backgroundColor: Colors.transparent, // Arka plan Stack'ten gelecek
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           // ARKA PLAN (GRADIENT VE YILDIZLAR)

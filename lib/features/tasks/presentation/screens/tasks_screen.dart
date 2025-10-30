@@ -7,7 +7,7 @@ import 'package:pomodoro_planner_app/features/tasks/presentation/widgets/task_li
 import '../widgets/add_edit_task_dialog.dart';
 
 class TasksScreen extends ConsumerWidget {
-  const TasksScreen({Key? key}) : super(key: key);
+  const TasksScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -78,7 +78,7 @@ class TasksScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Text(
-                    'Görevler',
+                    'Tasks',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 32,
@@ -87,7 +87,7 @@ class TasksScreen extends ConsumerWidget {
                   ),
                   TextButton.icon(
                     icon: const Icon(Icons.add, size: 18),
-                    label: const Text('Yeni Görev'),
+                    label: const Text('New Task'),
                     style: TextButton.styleFrom(
                       foregroundColor: Colors.white,
                       backgroundColor: Colors.white.withOpacity(0.15),
@@ -131,8 +131,8 @@ class TasksScreen extends ConsumerWidget {
                   indicatorSize: TabBarIndicatorSize.tab,
                   dividerColor: Colors.transparent,
                   tabs: [
-                    Tab(child: Text('Aktif (${activeTasks.length})')),
-                    Tab(child: Text('Tamamlandı (${completedTasks.length})')),
+                    Tab(child: Text('Active (${activeTasks.length})')),
+                    Tab(child: Text('Completed (${completedTasks.length})')),
                   ],
                 ),
               ),

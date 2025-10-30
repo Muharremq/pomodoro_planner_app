@@ -3,11 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:pomodoro_planner_app/features/navigation/presentation/screens/main_screen.dart';
 import 'package:pomodoro_planner_app/features/pomodoro/data/pomodoro_history_model.dart';
 import 'package:pomodoro_planner_app/features/tasks/data/task_model.dart';
-import 'package:pomodoro_planner_app/features/tasks/presentation/screens/tasks_screen.dart';
-import 'features/pomodoro/presentation/screens/timer_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:pomodoro_planner_app/features/pomodoro/data/pomodoro_history_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

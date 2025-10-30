@@ -37,8 +37,8 @@ class TaskCard extends ConsumerWidget {
                 onChanged: (bool? value) {
                   tasksNotifier.toggleTaskCompletion(task.id);
                 },
-                fillColor: MaterialStateProperty.resolveWith((states) {
-                  if (states.contains(MaterialState.selected)) {
+                fillColor: WidgetStateProperty.resolveWith((states) {
+                  if (states.contains(WidgetState.selected)) {
                     return Colors.lightBlueAccent.shade200;
                   }
                   return Colors.white.withOpacity(0.3);
@@ -129,7 +129,7 @@ class TaskCard extends ConsumerWidget {
           ),
 
           // Pomodoro Sayacı ve Progress Bar
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Row(
             children: [
               // Pomodoro Sayacı
@@ -158,7 +158,7 @@ class TaskCard extends ConsumerWidget {
                         color: Colors.white.withOpacity(0.8),
                       ),
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     // Emoji ve Sayı
                     Text(
                       '🍅 ${task.completedPomodoros} / ${task.targetPomodoros}',
@@ -168,7 +168,7 @@ class TaskCard extends ConsumerWidget {
                         letterSpacing: 0.5,
                       ),
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     // Artı Butonu
                     InkWell(
                       onTap: () => tasksNotifier.incrementPomodoro(task.id),
@@ -181,7 +181,7 @@ class TaskCard extends ConsumerWidget {
                   ],
                 ),
               ),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               // İlerleme Çubuğu (Progress Bar)
               Expanded(
                 child: ClipRRect(
