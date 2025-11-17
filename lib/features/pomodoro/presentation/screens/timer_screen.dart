@@ -7,14 +7,12 @@ import '../providers/timer_provider.dart';
 class TimerScreen extends ConsumerWidget {
   const TimerScreen({super.key});
 
-  // Süreyi "dakika:saniye" formatına çeviren yardımcı fonksiyon
   String _formatTime(int seconds) {
     final minutes = (seconds / 60).floor().toString().padLeft(2, '0');
     final remainingSeconds = (seconds % 60).toString().padLeft(2, '0');
     return '$minutes:$remainingSeconds';
   }
 
-  // Seans türüne göre metin döndüren yardımcı fonksiyon
   String _getSessionTitle(PomodoroSession session) {
     switch (session) {
       case PomodoroSession.focus:
@@ -26,7 +24,6 @@ class TimerScreen extends ConsumerWidget {
     }
   }
 
-  // Seans türüne göre ikon döndüren yardımcı fonksiyon
   IconData _getSessionIcon(PomodoroSession session) {
     switch (session) {
       case PomodoroSession.focus:
@@ -42,31 +39,59 @@ class TimerScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final timerState = ref.watch(timerProvider);
     final timerNotifier = ref.read(timerProvider.notifier);
-    final totalDuration = timerNotifier.getDurationForSession(
-      timerState.session,
-    );
+    final totalDuration =
+        timerNotifier.getDurationForSession(timerState.session);
 
     return SafeArea(
       child: Column(
         children: [
-          // BAŞLIK (TasksScreen ile aynı stilde)
+          // Header with glowing logo
           Padding(
-            padding: const EdgeInsets.only(
-              left: 24.0,
-              right: 16.0,
-              top: 16.0,
-              bottom: 12.0,
-            ),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 24).copyWith(top: 16, bottom: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Planet Focus',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 32, // Görevler ekranı ile aynı font boyutu
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  children: [
+                    Container(
+                      width: 38,
+                      height: 38,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.cyanAccent.shade400,
+                            Colors.blueAccent.shade700,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.cyanAccent.withOpacity(0.45),
+                            blurRadius: 12,
+                            spreadRadius: 0.5,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.public,
+                        color: Colors.white,
+                        size: 22,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    const Text(
+                      'Planet Study',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
                 IconButton(
                   onPressed: () {},
@@ -82,7 +107,7 @@ class TimerScreen extends ConsumerWidget {
 
           const Spacer(),
 
-          // SEANS TÜRÜ
+          // Session pill
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             decoration: BoxDecoration(
@@ -112,10 +137,32 @@ class TimerScreen extends ConsumerWidget {
 
           const SizedBox(height: 40),
 
-          // ZAMANLAYICI
+          // Timer with purple glow background
           Stack(
             alignment: Alignment.center,
             children: [
+              Container(
+                width: 300,
+                height: 300,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: const RadialGradient(
+                    colors: [
+                      Color(0xFF4B3B96),
+                      Color(0xFF241B4B),
+                    ],
+                    radius: 0.9,
+                    center: Alignment(0, -0.2),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blueAccent.withOpacity(0.55),
+                      blurRadius: 40,
+                      spreadRadius: 4,
+                    ),
+                  ],
+                ),
+              ),
               SizedBox(
                 width: 280,
                 height: 280,
@@ -125,9 +172,8 @@ class TimerScreen extends ConsumerWidget {
                       : 1.0,
                   strokeWidth: 12,
                   backgroundColor: Colors.white.withOpacity(0.1),
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Colors.cyanAccent.shade400,
-                  ),
+                  valueColor:
+                      AlwaysStoppedAnimation<Color>(Colors.cyanAccent.shade400),
                   strokeCap: StrokeCap.round,
                 ),
               ),
@@ -144,7 +190,7 @@ class TimerScreen extends ConsumerWidget {
 
           const SizedBox(height: 40),
 
-          // KONTROL BUTONLARI
+          // Control buttons with glow
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -154,7 +200,21 @@ class TimerScreen extends ConsumerWidget {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white.withOpacity(0.1),
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.white.withOpacity(0.08),
+                        Colors.white.withOpacity(0.02),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.white.withOpacity(0.14),
+                        blurRadius: 14,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
                   ),
                   child: const Icon(
                     Icons.skip_next_rounded,
@@ -164,26 +224,40 @@ class TimerScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(width: 20),
-              ElevatedButton(
-                onPressed: () {
-                  if (timerState.status == TimerStatus.running) {
-                    timerNotifier.pauseTimer();
-                  } else {
-                    timerNotifier.startTimer();
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  padding: const EdgeInsets.all(28),
-                  backgroundColor: Colors.cyanAccent.shade400,
-                  foregroundColor: Colors.blue.shade900,
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.cyanAccent.withOpacity(0.4),
+                      blurRadius: 24,
+                      spreadRadius: 2,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
                 ),
-                child: Icon(
-                  timerState.status == TimerStatus.running
-                      ? Icons.pause_rounded
-                      : Icons.play_arrow_rounded,
-                  size: 48,
-                  color: const Color(0xFF0F0C29),
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (timerState.status == TimerStatus.running) {
+                      timerNotifier.pauseTimer();
+                    } else {
+                      timerNotifier.startTimer();
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: const CircleBorder(),
+                    padding: const EdgeInsets.all(30),
+                    backgroundColor: Colors.cyanAccent.shade400,
+                    foregroundColor: Colors.blue.shade900,
+                    elevation: 0,
+                  ),
+                  child: Icon(
+                    timerState.status == TimerStatus.running
+                        ? Icons.pause_rounded
+                        : Icons.play_arrow_rounded,
+                    size: 50,
+                    color: const Color(0xFF0F0C29),
+                  ),
                 ),
               ),
               const SizedBox(width: 20),
@@ -193,7 +267,21 @@ class TimerScreen extends ConsumerWidget {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white.withOpacity(0.1),
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.white.withOpacity(0.08),
+                        Colors.white.withOpacity(0.02),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.white.withOpacity(0.14),
+                        blurRadius: 14,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
                   ),
                   child: const Icon(
                     Icons.refresh_rounded,
